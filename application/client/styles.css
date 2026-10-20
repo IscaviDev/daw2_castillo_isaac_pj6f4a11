@@ -317,6 +317,7 @@ legend {
 .data-table ul {
     margin: 0;
     padding-left: 18px;
+    min-width: 300px;
 }
 
 /* ---------- Responsive ---------- */
