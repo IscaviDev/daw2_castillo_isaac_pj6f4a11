@@ -191,6 +191,29 @@ function renderOrdersTable($orders)
     return renderTable($columns, $rows);
 }
 
+// Detailed table of the products of one order (product id => order line)
+function renderProductsTable($products)
+{
+    $columns = [
+        'productId' => 'Product code',
+        'name' => 'Product',
+        'unitPrice' => 'Unit price (without VAT)',
+        'quantity' => 'Quantity',
+        'subtotal' => 'Subtotal (without VAT)',
+    ];
+    $rows = [];
+    foreach ($products as $productId => $line) {
+        $rows[$productId] = [
+            'productId' => createCell($productId),
+            'name' => createCell($line['name']),
+            'unitPrice' => createCell(formatMoney($line['unitPrice']), true),
+            'quantity' => createCell($line['quantity'], true),
+            'subtotal' => createCell(formatMoney($line['subtotal']), true),
+        ];
+    }
+    return renderTable($columns, $rows);
+}
+
 // Sends an HTML document with the given status code and stops the script
 function sendHtmlPage($statusCode, $title, $content)
 {
