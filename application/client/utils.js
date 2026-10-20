@@ -37,4 +37,19 @@ function hideMessage(elementId) {
     element.hidden = true;
 }
 
+// Protected pages call this function: if the server says there is no active
+// session, the user is sent back to the start page
+async function requireSession() {
+    try {
+        const response = await fetch(SERVER_URL + "session.php");
+        if (response.status === 200) {
+            return true;
+        }
+    } catch (error) {
+        // The server could not be reached: treated as a non active session
+    }
+    goTo("index.html?error=session");
+    return false;
+}
+
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
