@@ -12,6 +12,9 @@ define('USERS_FILE', __DIR__ . '/../../users/users.json');
 define('ORDERS_DIR', __DIR__ . '/../../orders');
 define('ORDERS_FILE', ORDERS_DIR . '/orders.json');
 
+// VAT applied to every order (%)
+define('VAT_RATE', 21);
+
 /* ==========================================================
    HTTP responses
    ========================================================== */
@@ -136,4 +139,43 @@ function loadUsers()
 function getInputText($source, $field)
 {
     return isset($source[$field]) && is_string($source[$field]) ? trim($source[$field]) : '';
+}
+
+/* ==========================================================
+   Product catalogue
+   The only 4 products that can be included in an order.
+   Prices in euros without VAT (usual prices in Spanish DIY and
+   construction stores, October 2026).
+   ========================================================== */
+
+function getProducts()
+{
+    return [
+        'P01' => [
+            'name' => 'Grey cement CEM II/B-L 32.5 N (25 kg bag)',
+            'unit' => 'bag',
+            'price' => 3.26,
+        ],
+        'P02' => [
+            'name' => 'Double hollow brick 24 x 11.5 x 8 cm',
+            'unit' => 'brick',
+            'price' => 0.15,
+        ],
+        'P03' => [
+            'name' => 'Plasterboard 2500 x 1200 x 13 mm',
+            'unit' => 'board',
+            'price' => 6.94,
+        ],
+        'P04' => [
+            'name' => 'White matt interior plastic paint (15 L bucket)',
+            'unit' => 'bucket',
+            'price' => 32.23,
+        ],
+    ];
+}
+
+// Formats an amount of money, for example 1234.5 -> "1,234.50 €"
+function formatMoney($amount)
+{
+    return number_format($amount, 2, '.', ',') . ' €';
 }
