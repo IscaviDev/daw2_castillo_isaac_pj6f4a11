@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View orders - BuildPro Order Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <p class="app-name">BuildPro <span>Order Manager</span></p>
+        <p class="logged-user" id="logged-user"></p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h1>View orders</h1>
+            <p>Select how you want to view the orders and click the access button.</p>
+
+            <div class="form-row">
+                <label for="view">Available views</label>
+                <select id="view">
+                    <option value="">-- Select a view --</option>
+                    <option value="all">View all orders</option>
+                    <option value="one">View one order</option>
+                </select>
+            </div>
+
+            <div id="view-message" class="message" hidden></div>
+
+            <div class="button-bar">
+                <button type="button" id="view-button">Go to selected view</button>
+                <button type="button" class="secondary" data-go="menu.html">Back to operations menu</button>
+                <button type="button" class="secondary" data-go="index.html">Back to start</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="utils.js"></script>
+    <script src="ordersMenu.js"></script>
+</body>
+</html>
