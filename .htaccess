@@ -1,0 +1,16 @@
+# Apache configuration of the application (XAMPP: AllowOverride All)
+
+# Do not list the content of the folders
+Options -Indexes
+
+RewriteEngine On
+
+# Secure communications: every HTTP request is redirected to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# The data files can only be used by the PHP scripts, never downloaded from the browser
+RewriteRule ^(users|orders)(/|$) - [F,L]
+
+# The root of the application opens the start page
+RewriteRule ^$ %{REQUEST_URI}application/client/index.html [R=302,L]
