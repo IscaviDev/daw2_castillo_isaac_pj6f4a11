@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New order - BuildPro Order Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <p class="app-name">BuildPro <span>Order Manager</span></p>
+        <p class="logged-user" id="logged-user"></p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h1>Create a new order</h1>
+            <p>Fill in the order data, tick the products the customer wants and enter the quantities. All fields are mandatory.</p>
+
+            <form id="order-form" novalidate>
+                <fieldset>
+                    <legend>Order</legend>
+                    <div class="form-row">
+                        <label for="code">Order code</label>
+                        <input type="text" id="code" name="code" maxlength="20" placeholder="ORD-001">
+                        <span class="hint">3 to 20 letters, numbers or hyphens. Each code can only be used once.</span>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Customer</legend>
+                    <div class="form-row">
+                        <label for="fullName">Full name (first name and surname)</label>
+                        <input type="text" id="fullName" name="fullName" maxlength="100" autocomplete="name">
+                    </div>
+                    <div class="form-row">
+                        <label for="address">Postal address</label>
+                        <input type="text" id="address" name="address" maxlength="150" autocomplete="street-address">
+                    </div>
+                    <div class="form-row">
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" maxlength="100" autocomplete="email" placeholder="name@example.com">
+                    </div>
+                    <div class="form-row">
+                        <label for="phone">Phone number</label>
+                        <input type="tel" id="phone" name="phone" maxlength="20" autocomplete="tel" placeholder="+34 600 123 456">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Products</legend>
+                    <p class="hint">Prices per unit without VAT. 21% VAT is added to the total of the order.</p>
+                    <div class="table-wrapper">
+                        <table class="product-list">
+                            <thead>
+                                <tr>
+                                    <th>Buy</th>
+                                    <th>Product</th>
+                                    <th>Unit price</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-rows">
+                                <tr><td colspan="4">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+
+                <div id="order-message" class="message" hidden></div>
+                <div id="order-result" class="message success" hidden></div>
+
+                <div class="button-bar">
+                    <button type="submit" id="send-button">Send order</button>
+                    <button type="button" class="secondary" data-go="menu.html">Back to operations menu</button>
+                    <button type="button" class="secondary" data-go="index.html">Back to start</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="utils.js"></script>
+    <script src="newOrder.js"></script>
+</body>
+</html>
