@@ -305,14 +305,21 @@ function isValidOrderCode($code)
     return preg_match(ORDER_CODE_PATTERN, $code) === 1;
 }
 
+// Replaces groups of spaces with a single space.
+// Texts that are not valid UTF-8 become an empty string, so they fail the validation.
+function normaliseSpaces($text, $replacement = ' ')
+{
+    return (string) preg_replace('/\s+/u', $replacement, $text);
+}
+
 // Reads the customer data received in the request and returns it as an associative array
 function getCustomerData($input)
 {
     return [
-        'fullName' => preg_replace('/\s+/u', ' ', getInputText($input, 'fullName')),
-        'address' => preg_replace('/\s+/u', ' ', getInputText($input, 'address')),
+        'fullName' => normaliseSpaces(getInputText($input, 'fullName')),
+        'address' => normaliseSpaces(getInputText($input, 'address')),
         'email' => getInputText($input, 'email'),
-        'phone' => preg_replace('/\s+/', '', getInputText($input, 'phone')),
+        'phone' => normaliseSpaces(getInputText($input, 'phone'), ''),
     ];
 }
 
