@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - BuildPro Order Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <p class="app-name">BuildPro <span>Order Manager</span></p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h1>Description and documentation</h1>
+
+            <h2>About the application</h2>
+            <p>
+                BuildPro Order Manager is the e-commerce application used by the sales staff of
+                BuildPro Construction Supplies, a European chain of construction material stores.
+                It allows sales staff to register the orders placed by customers and to look them up later.
+                Prices, VAT calculations and data storage are always handled by the server.
+            </p>
+
+            <h2>Product catalogue</h2>
+            <p>Orders can only include the following four products (prices without VAT):</p>
+            <ul>
+                <li>Grey cement CEM II/B-L 32.5 N, 25 kg bag</li>
+                <li>Double hollow brick, 24 x 11.5 x 8 cm</li>
+                <li>Plasterboard, 2500 x 1200 x 13 mm</li>
+                <li>White matt interior plastic paint, 15 L bucket</li>
+            </ul>
+
+            <h2>Access to the application</h2>
+            <p>
+                Click <strong>Log in</strong> and enter your user name and password. Both fields are mandatory.
+                If the server cannot validate the user, an authentication error is shown and you are taken
+                back to the start page.
+            </p>
+
+            <h2>Operations menu</h2>
+            <p>
+                After logging in, choose an operation from the drop-down menu and click
+                <strong>Go to selected operation</strong>. The available operations are:
+            </p>
+
+            <h3>1. Create a new order</h3>
+            <ol>
+                <li>Enter the order code (3 to 20 letters, numbers or hyphens, for example <code>ORD-001</code>). Each code can only be used once.</li>
+                <li>Enter the customer's full name (first name and surname), postal address, email address and phone number.</li>
+                <li>Tick the products the customer wants to buy. Ticking a product enables its quantity field; enter a whole number of units (at least 1).</li>
+                <li>Click <strong>Send order</strong>. The server calculates the total price including 21% VAT, saves the order and the total is shown below the form.</li>
+            </ol>
+            <p>If any data is missing or incorrect, a message explains what needs to be fixed and the order is not sent.</p>
+
+            <h3>2. View orders</h3>
+            <p>Choose one of these options from the orders view menu and click <strong>Go to selected view</strong>:</p>
+            <ul>
+                <li><strong>View all orders:</strong> shows a table with all the data of every saved order.</li>
+                <li><strong>View one order:</strong> enter the code of an order and click <strong>Show order</strong> to see a table with all its data.</li>
+            </ul>
+            <p>
+                If no orders have been saved yet, or the orders file cannot be opened, an error page is shown.
+                An error page is also shown when there is no order with the code you entered.
+            </p>
+
+            <div class="button-bar">
+                <button type="button" class="secondary" data-go="index.html">Back to start</button>
+                <button type="button" data-go="login.html">Log in</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="utils.js"></script>
+</body>
+</html>
