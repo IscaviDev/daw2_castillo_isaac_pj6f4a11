@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in - BuildPro Order Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <p class="app-name">BuildPro <span>Order Manager</span></p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h1>Log in</h1>
+            <p>Enter your user name and password to access the operations menu.</p>
+
+            <form id="login-form" novalidate>
+                <div class="form-row">
+                    <label for="user">User name</label>
+                    <input type="text" id="user" name="user" autocomplete="username">
+                </div>
+                <div class="form-row">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password">
+                </div>
+
+                <div id="login-message" class="message" hidden></div>
+
+                <div class="button-bar">
+                    <button type="button" class="secondary" data-go="index.html">Back to start</button>
+                    <button type="submit" id="login-button">Access operations menu</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="utils.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>
