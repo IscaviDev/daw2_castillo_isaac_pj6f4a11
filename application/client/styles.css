@@ -54,6 +54,12 @@ body {
     color: var(--color-primary);
 }
 
+.app-header .logged-user {
+    margin: 0 0 0 auto;
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
 main {
     max-width: 1100px;
     margin: 32px auto;
