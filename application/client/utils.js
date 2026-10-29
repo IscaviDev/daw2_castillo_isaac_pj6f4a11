@@ -38,18 +38,47 @@ function hideMessage(elementId) {
 }
 
 // Protected pages call this function: if the server says there is no active
-// session, the user is sent back to the start page
+// session, the user is sent back to the start page.
+// Returns the name of the logged in user, or null.
 async function requireSession() {
     try {
         const response = await fetch(SERVER_URL + "session.php");
         if (response.status === 200) {
-            return true;
+            const session = await response.json();
+            showLoggedUser(session.user);
+            return session.user;
         }
     } catch (error) {
         // The server could not be reached: treated as a non active session
     }
     goTo("index.html?error=session");
-    return false;
+    return null;
+}
+
+// Writes the name of the logged in user in the page header
+function showLoggedUser(userName) {
+    const element = document.getElementById("logged-user");
+    if (element) {
+        element.textContent = "Logged in as: " + userName;
+    }
+}
+
+// Menus with a drop-down list and a single access button.
+// pages is an associative object: option value -> page to open
+function setupOperationSelector(selectId, buttonId, messageId, pages) {
+    const select = document.getElementById(selectId);
+    document.getElementById(buttonId).addEventListener("click", function () {
+        const option = select.value;
+        if (!(option in pages)) {
+            showMessage(messageId, "Please select an option from the list first.", "error");
+            select.focus();
+            return;
+        }
+        goTo(pages[option]);
+    });
+    select.addEventListener("change", function () {
+        hideMessage(messageId);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
