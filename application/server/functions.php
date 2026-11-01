@@ -179,3 +179,139 @@ function formatMoney($amount)
 {
     return number_format($amount, 2, '.', ',') . ' €';
 }
+
+/* ==========================================================
+   Order validation
+   ========================================================== */
+
+// Order codes: 3 to 20 letters, numbers or hyphens (always stored in capital letters)
+define('ORDER_CODE_PATTERN', '/^[A-Z0-9-]{3,20}$/');
+
+// Maximum quantity of each product in an order
+define('MAX_QUANTITY', 100000);
+
+// Order codes are not case sensitive: "ord-001" and "ORD-001" are the same order
+function normaliseOrderCode($code)
+{
+    return strtoupper(trim($code));
+}
+
+function isValidOrderCode($code)
+{
+    return preg_match(ORDER_CODE_PATTERN, $code) === 1;
+}
+
+// Reads the customer data received in the request and returns it as an associative array
+function getCustomerData($input)
+{
+    return [
+        'fullName' => preg_replace('/\s+/u', ' ', getInputText($input, 'fullName')),
+        'address' => preg_replace('/\s+/u', ' ', getInputText($input, 'address')),
+        'email' => getInputText($input, 'email'),
+        'phone' => preg_replace('/\s+/', '', getInputText($input, 'phone')),
+    ];
+}
+
+// Validates the customer data. Returns an associative array: field => error message
+function validateCustomer($customer)
+{
+    $errors = [];
+
+    // At least two words (first name and surname) made of letters
+    $namePattern = "/^\p{L}[\p{L}'.-]*( \p{L}[\p{L}'.-]*)+$/u";
+    if (!preg_match($namePattern, $customer['fullName']) || mb_strlen($customer['fullName']) > 100) {
+        $errors['fullName'] = 'Enter the full name of the customer (first name and surname, letters only, maximum 100 characters).';
+    }
+
+    $addressLength = mb_strlen($customer['address']);
+    if ($addressLength < 5 || $addressLength > 150) {
+        $errors['address'] = 'Enter the postal address of the customer (5 to 150 characters).';
+    }
+
+    if (filter_var($customer['email'], FILTER_VALIDATE_EMAIL) === false || strlen($customer['email']) > 100) {
+        $errors['email'] = 'Enter a valid email address, for example name@example.com.';
+    }
+
+    if (!preg_match('/^\+?[0-9]{9,15}$/', $customer['phone'])) {
+        $errors['phone'] = 'Enter a valid phone number (9 to 15 digits, it can start with +).';
+    }
+
+    return $errors;
+}
+
+// Validates the selected products. $quantities is an associative array: product id => quantity.
+// Returns an associative array: field => error message
+function validateQuantities($quantities, $products)
+{
+    $errors = [];
+
+    if (!is_array($quantities) || count($quantities) === 0) {
+        $errors['products'] = 'Select at least one product and enter the quantity you want to buy.';
+        return $errors;
+    }
+
+    foreach ($quantities as $productId => $quantity) {
+        if (!isset($products[$productId])) {
+            $errors['products'] = 'The order contains a product that is not in the catalogue.';
+            continue;
+        }
+        $isWholeNumber = is_string($quantity) && ctype_digit($quantity);
+        if (!$isWholeNumber || (int) $quantity < 1 || (int) $quantity > MAX_QUANTITY) {
+            $errors['quantity-' . $productId] = 'The quantity of "' . $products[$productId]['name']
+                . '" must be a whole number between 1 and ' . number_format(MAX_QUANTITY) . '.';
+        }
+    }
+
+    return $errors;
+}
+
+/* ==========================================================
+   Order calculations
+   ========================================================== */
+
+// Builds the order lines: product id => name, unit price, quantity and subtotal
+function calculateOrderLines($quantities, $products)
+{
+    $lines = [];
+    foreach ($quantities as $productId => $quantity) {
+        $unitPrice = $products[$productId]['price'];
+        $lines[$productId] = [
+            'name' => $products[$productId]['name'],
+            'unitPrice' => $unitPrice,
+            'quantity' => (int) $quantity,
+            'subtotal' => round($unitPrice * (int) $quantity, 2),
+        ];
+    }
+    return $lines;
+}
+
+// Calculates the totals of an order with the VAT rate of the application
+function calculateTotals($lines)
+{
+    $withoutVat = 0;
+    foreach ($lines as $line) {
+        $withoutVat += $line['subtotal'];
+    }
+    $withoutVat = round($withoutVat, 2);
+    $vat = round($withoutVat * VAT_RATE / 100, 2);
+
+    return [
+        'withoutVat' => $withoutVat,
+        'vatRate' => VAT_RATE,
+        'vat' => $vat,
+        'withVat' => round($withoutVat + $vat, 2),
+    ];
+}
+
+// Puts together all the data of a new order in a multidimensional associative array
+function buildOrder($code, $customer, $lines, $userName)
+{
+    return [
+        'code' => $code,
+        'date' => date('Y-m-d H:i:s'),
+        'salesperson' => $userName,
+        'customer' => $customer,
+        'products' => $lines,
+        'totals' => calculateTotals($lines),
+    ];
+}
