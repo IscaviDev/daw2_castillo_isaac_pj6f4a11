@@ -202,6 +202,11 @@ input:disabled {
     background: #eeeeee;
 }
 
+input.invalid {
+    border: 2px solid var(--color-error);
+    background: var(--color-error-bg);
+}
+
 .hint {
     color: var(--color-grey);
     font-size: 0.85rem;
