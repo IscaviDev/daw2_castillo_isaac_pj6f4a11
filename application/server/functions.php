@@ -117,6 +117,80 @@ function renderNavigationButtons()
     return $html . '</div>';
 }
 
+// Returns an HTML table.
+// $columns: column key => column name shown to the user
+// $rows: row key => [column key => ['html' => cell content already escaped, 'class' => css class]]
+function renderTable($columns, $rows)
+{
+    $html = '<div class="table-wrapper"><table class="data-table"><thead><tr>';
+    foreach ($columns as $columnName) {
+        $html .= '<th scope="col">' . escape($columnName) . '</th>';
+    }
+    $html .= '</tr></thead><tbody>';
+    foreach ($rows as $row) {
+        $html .= '<tr>';
+        foreach ($columns as $columnKey => $columnName) {
+            $cell = $row[$columnKey];
+            $class = $cell['class'] === '' ? '' : ' class="' . $cell['class'] . '"';
+            $html .= '<td' . $class . '>' . $cell['html'] . '</td>';
+        }
+        $html .= '</tr>';
+    }
+    return $html . '</tbody></table></div>';
+}
+
+// Creates a table cell: plain text is escaped, numbers can be aligned to the right
+function createCell($text, $isNumber = false)
+{
+    return ['html' => escape($text), 'class' => $isNumber ? 'number' : ''];
+}
+
+// List of the products of an order, shown inside a cell of the orders table
+function renderProductList($products)
+{
+    $html = '<ul>';
+    foreach ($products as $productId => $line) {
+        $html .= '<li>' . escape($productId . ' - ' . $line['name'] . ': ' . $line['quantity']
+            . ' x ' . formatMoney($line['unitPrice']) . ' = ' . formatMoney($line['subtotal'])) . '</li>';
+    }
+    return $html . '</ul>';
+}
+
+// Table with all the data of the orders received (order code => order)
+function renderOrdersTable($orders)
+{
+    $columns = [
+        'code' => 'Order code',
+        'date' => 'Date and time',
+        'salesperson' => 'Salesperson',
+        'fullName' => 'Customer full name',
+        'address' => 'Postal address',
+        'email' => 'Email address',
+        'phone' => 'Phone number',
+        'products' => 'Products (quantity x unit price = subtotal)',
+        'withoutVat' => 'Total without VAT',
+        'vat' => 'VAT (' . VAT_RATE . '%)',
+        'withVat' => 'Total with VAT',
+    ];
+    $rows = [];
+    foreach ($orders as $code => $order) {
+        $rows[$code] = [
+            'code' => createCell($order['code']),
+            'date' => createCell($order['date']),
+            'salesperson' => createCell($order['salesperson']),
+            'fullName' => createCell($order['customer']['fullName']),
+            'address' => createCell($order['customer']['address']),
+            'email' => createCell($order['customer']['email']),
+            'phone' => createCell($order['customer']['phone']),
+            'products' => ['html' => renderProductList($order['products']), 'class' => ''],
+            'withoutVat' => createCell(formatMoney($order['totals']['withoutVat']), true),
+            'vat' => createCell(formatMoney($order['totals']['vat']), true),
+            'withVat' => createCell(formatMoney($order['totals']['withVat']), true),
+        ];
+    }
+    return renderTable($columns, $rows);
+}
+
 // Sends an HTML document with the given status code and stops the script
 function sendHtmlPage($statusCode, $title, $content)
 {
